@@ -1,54 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 
 <head>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" href="css/styles.css">
-	<script src="js/script.js"></script>
- </head>
- 
- <body>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta charset="utf-8">
+  <title>Missing People</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
 
-	<style>
-		.card {
-		  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-		  transition: 0.3s;
-		  width: 40%;
-		  border-radius: 5px;
-		}
+<body>
+	<div>
+		{% for item in collection_missing_people: %}
+			<div class="courses-container">
+				<div class="course">
+					<div class="course-preview">
+						<a href="{{ item.url_image }}"><img src="{{ item.url_image }}"></a>
+						<h6>{{ item.date_create }}</h6>
+					</div>
+					<div class="course-info">
+						<div class="progress-container">
+							<span>
+								{{ item.date_create }}
+							</span>
+						</div>
+						<h6>{{ item.date_create }}</h6>
+						<h4>Description:</h4>
+						<h5>{{ item.description }}</h5>
+						<a class="btn" href="{{ item.url_html_page }}">VIEW<i class="fas fa-chevron-right"></i></a>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
 		
-		.card:hover {
-		  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-		}
 		
-		img {
-		  border-radius: 5px 5px 0 0;
-		}
-		
-		.container {
-		  padding: 2px 16px;
-		}
-		</style>
-		</head>
-		<body>
-		
-		<h2>Round Card</h2>
-		
-
-	
-
-<div class='container'>
-	{% for item in collection_missing_people: %}
-	<div class="card">
-		<img src="{{ item.url_image }}" alt="Avatar" style="width:100%">
-		<div class="container">
-		  <h4><b>{{ item.date_create }}</b></h4> 
-		  <p>{{ item.url_html_page }}</p> 
-		  <P>{{ item.description }}</P>
+		<!-- SOCIAL PANEL HTML -->
+		<div class="social-panel-container">
+			<div class="social-panel">
+				<p>Created with <i class="fa fa-heart"></i> by
+					<a target="_blank" href="https://florin-pop.com">Florin Pop</a></p>
+				<button class="close-btn"><i class="fas fa-times"></i></button>
+				<h4>Get in touch on</h4>
+				<ul>
+					<li>
+						<a href="https://www.patreon.com/florinpop17" target="_blank">
+							<i class="fab fa-discord"></i>
+						</a>
+					</li>
+					<li>
+						<a href="https://twitter.com/florinpop1705" target="_blank">
+							<i class="fab fa-twitter"></i>
+						</a>
+					</li>
+					<li>
+						<a href="https://linkedin.com/in/florinpop17" target="_blank">
+							<i class="fab fa-linkedin"></i>
+						</a>
+					</li>
+					<li>
+						<a href="https://facebook.com/florinpop17" target="_blank">
+							<i class="fab fa-facebook"></i>
+						</a>
+					</li>
+					<li>
+						<a href="https://instagram.com/florinpop17" target="_blank">
+							<i class="fab fa-instagram"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
 		</div>
-	  </div>
-	{% endfor %}
-</div>  
+		
+		<a class="floating-btn" href="/reparsing">REPARSING</a>
+		
+		
+		<div class="floating-text">
+			<a href="/prev" target="_blank">prev</a> | <a href="/next" target="_blank">next</a>
+			<br>
+			{{ status_page }}
+			<br>
+			{{ status_count_missing_people }}
+		</div>
+		
+	</div>
 
-</body>
 </html>

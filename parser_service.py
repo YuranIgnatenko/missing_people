@@ -13,10 +13,28 @@ class MissingPeople():
 		self.description =  description
 
 def MissingPeopleFromSoup(url_site_prefix:str, item_div_people_info:BeautifulSoup) -> MissingPeople:
-	date_create = item_div_people_info.find("div",class_="bl-item-date").text
-	description = item_div_people_info.find("p").text
+	try:
+		date_create = item_div_people_info.find("div",class_="bl-item-date").text
+	except:
+		date_create = "no date create"
+
+	try:
+		description = item_div_people_info.find("div",class_="bl-item-text").text
+	except:
+		try:
+			description = item_div_people_info.find("p").text
+		except:
+			try:
+				description = item_div_people_info.find("h4").text
+			except:
+				description = "no description"
+
 	url_html_page = url_site_prefix+item_div_people_info.find("a").get('href')
-	url_image = url_site_prefix+item_div_people_info.find("img").get('src')
+	
+	try:
+		url_image = url_site_prefix+item_div_people_info.find("img").get('src')
+	except:
+		url_image = "static/img/alert.jpg"
 	return MissingPeople(url_image,date_create,url_html_page,description)
 
 class Parser():
@@ -29,11 +47,11 @@ class Parser():
 			"yandexuid":"2083661171724784397"
 		}
 
-	def get_array_missing_people_from_all_pages(self, url:str) -> list[MissingPeople]:
+	def get_array_missing_people_from_all_pages(self, url_site:str, url:str) -> list[MissingPeople]:
 		temp_array_missing_people = []
 		for html_page_url in self.get_array_html_pages_urls(url):
-			temp_array_missing_people += self.get_array_missing_people_from_url(html_page_url)
-		print(len(temp_array_missing_people))
+			temp_array_missing_people += self.get_array_missing_people_from_url(url_site, html_page_url)
+		return temp_array_missing_people
 
 	def get_array_missing_people_from_url(self, url_site:str, url_alsert_search:str) -> list[MissingPeople]:
 		response = requests.get(url_alsert_search, headers=self.headers, cookies=self.cookies)
@@ -65,10 +83,9 @@ class Parser():
 				div_str = str(div)
 				if div_str.startswith(r'<a href="/folder/'):
 					temp_url_page = url+div_str.split('="')[1].split('">')[0]
+					temp_url_page = temp_url_page.replace("/folder/918943/folder/918943", "/folder/918943")
 					temp_array_peoples.append(temp_url_page)
 		return temp_array_peoples
-
-
 
 def main() -> None:
 	parser = Parser()

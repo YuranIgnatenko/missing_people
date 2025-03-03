@@ -15,4 +15,5 @@ http://127.0.0.1:5000
 
 > demo screen page
 
+![alt text](demo/img_2.png)
 ![alt text](demo/img_1.png)
