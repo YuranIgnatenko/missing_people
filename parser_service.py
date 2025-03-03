@@ -11,6 +11,8 @@ class MissingPeople():
 		self.date_create = date_create 
 		self.url_html_page = url_html_page
 		self.description =  description
+	def get_id(self):
+		return self.url_html_page.split("/")[-2]
 
 def MissingPeopleFromSoup(url_site_prefix:str, item_div_people_info:BeautifulSoup) -> MissingPeople:
 	try:

@@ -25,51 +25,14 @@
 							</span>
 						</div>
 						<h6>{{ item.date_create }}</h6>
-						<h4>Description:</h4>
 						<h5>{{ item.description }}</h5>
-						<a class="btn" href="{{ item.url_html_page }}">VIEW<i class="fas fa-chevron-right"></i></a>
+						<a href="{{ item.url_html_page }}">Источник</a>
+						<a class="btn" href="view/{{ item.get_id() }}">Подробнее<i class="fas fa-chevron-right"></i></a>
 					</div>
 				</div>
 			</div>
 		{% endfor %}
 		
-		
-		<!-- SOCIAL PANEL HTML -->
-		<div class="social-panel-container">
-			<div class="social-panel">
-				<p>Created with <i class="fa fa-heart"></i> by
-					<a target="_blank" href="https://florin-pop.com">Florin Pop</a></p>
-				<button class="close-btn"><i class="fas fa-times"></i></button>
-				<h4>Get in touch on</h4>
-				<ul>
-					<li>
-						<a href="https://www.patreon.com/florinpop17" target="_blank">
-							<i class="fab fa-discord"></i>
-						</a>
-					</li>
-					<li>
-						<a href="https://twitter.com/florinpop1705" target="_blank">
-							<i class="fab fa-twitter"></i>
-						</a>
-					</li>
-					<li>
-						<a href="https://linkedin.com/in/florinpop17" target="_blank">
-							<i class="fab fa-linkedin"></i>
-						</a>
-					</li>
-					<li>
-						<a href="https://facebook.com/florinpop17" target="_blank">
-							<i class="fab fa-facebook"></i>
-						</a>
-					</li>
-					<li>
-						<a href="https://instagram.com/florinpop17" target="_blank">
-							<i class="fab fa-instagram"></i>
-						</a>
-					</li>
-				</ul>
-			</div>
-		</div>
 		
 		<a class="floating-btn" href="/reparsing">REPARSING</a>
 		
@@ -83,5 +46,6 @@
 		</div>
 		
 	</div>
-
+	
+</body>
 </html>

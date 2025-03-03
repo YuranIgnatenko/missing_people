@@ -68,6 +68,16 @@ class WebApp():
 			status_count_missing_people=self.status_count_missing_people, 
 			status_page=self.format_status_page())
 
+		@self.app.route('/view/<id>')
+		def view_id(id):
+			print(id)
+			for people in self.collection_missing_people:
+				if people.get_id() == id:
+					temp_more_url = people.url_image
+					
+			self.active_number_page -= 1
+			return render_template('single.html', date_now="test", image_missing_people = temp_more_url )
+
 	def start_app(self) -> None:
 		self.app.run(debug=False)
 
