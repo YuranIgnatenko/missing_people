@@ -14,6 +14,18 @@ class MissingPeople():
 	def get_id(self):
 		return self.url_html_page.split("/")[-2]
 
+class MissingPeopleProfile():
+	def __init__(self, url_image:str, date_create:str, url_html_page:str, description:str, title:str) -> None:
+		self.url_image = url_image
+		self.date_create = date_create 
+		self.url_html_page = url_html_page
+		self.description =  description
+		self.title = title
+	def get_id(self):
+		return self.url_html_page.split("/")[-2]
+
+
+
 def MissingPeopleFromSoup(url_site_prefix:str, item_div_people_info:BeautifulSoup) -> MissingPeople:
 	try:
 		date_create = item_div_people_info.find("div",class_="bl-item-date").text
@@ -48,6 +60,31 @@ class Parser():
 			"yandex_login":"Yuran.Ignatenko",
 			"yandexuid":"2083661171724784397"
 		}
+
+	def get_profile_missing_people(self, missing_people:MissingPeople) -> MissingPeopleProfile:
+		response = requests.get(missing_people.url_html_page, headers=self.headers, cookies=self.cookies)
+		soup = BeautifulSoup(response.text, 'html.parser')
+
+		word_for_split = r'Официальная группа Главного следственного управления в социальной сети "ВКонтакте"'
+		temp_array_peoples = []
+		temp_description = ""
+		temp_url_image = ""
+		temp_date_create = ""
+		temp_url_html_page = ""
+		temp_title = ""
+
+		for soup_p in soup.find_all('p'):
+			temp_description += soup_p.text
+		
+		temp_url_image = URL_SITE+soup.find('img', class_="img_left").get('src')
+		temp_title = soup.find('h1', class_="b-topic t-h1 m_b4").text
+		temp_description = temp_description.split(word_for_split)[0]
+		temp_date_create = missing_people.date_create
+		temp_url_html_page = missing_people.url_html_page
+
+		print()
+		print(temp_url_image)
+		return MissingPeopleProfile(temp_url_image,temp_date_create,temp_url_html_page,temp_description, temp_title)
 
 	def get_array_missing_people_from_all_pages(self, url_site:str, url:str) -> list[MissingPeople]:
 		temp_array_missing_people = []

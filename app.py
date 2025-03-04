@@ -70,13 +70,11 @@ class WebApp():
 
 		@self.app.route('/view/<id>')
 		def view_id(id):
-			print(id)
 			for people in self.collection_missing_people:
 				if people.get_id() == id:
-					temp_more_url = people.url_image
+					temp_profile_missing_people = self.parser_service.get_profile_missing_people(people)
 					
-			self.active_number_page -= 1
-			return render_template('single.html', date_now="test", image_missing_people = temp_more_url )
+			return render_template('single.html', missing_people_profile = temp_profile_missing_people )
 
 	def start_app(self) -> None:
 		self.app.run(debug=False)
