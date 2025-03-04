@@ -9,7 +9,7 @@ class WebApp():
 		self.collection_missing_people = self.parser_service.get_array_missing_people_from_url(URL_SITE, URL_SITE_ALERT_SEARCH)
 
 		self.status_count_missing_people = self.format_status_missing_people()
-		self.count_max_items_in_page = 2
+		self.count_max_items_in_page = 5
 		self.active_number_page = 0
 		self.setup_routes()
 

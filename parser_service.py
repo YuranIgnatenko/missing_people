@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import sys, json, argparse
 
 URL_SITE = "https://moscow.sledcom.ru/"
-URL_SITE_ALERT_SEARCH = "https://moscow.sledcom.ru/folder/918943"
+URL_SITE_ALERT_SEARCH = "https://moscow.sledcom.ru/attention/Vnimanie_Propal_rebenok" # "https://moscow.sledcom.ru/folder/918943"
 
 class MissingPeople():
 	def __init__(self, url_image:str, date_create:str, url_html_page:str, description:str) -> None:
