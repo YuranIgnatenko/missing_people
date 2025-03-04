@@ -77,7 +77,7 @@ class WebApp():
 			return render_template('single.html', collection_missing_people_profile = temp_missing_people_profile )
 
 		@self.app.route('/missing_people_child')
-		def missing_people_child(id):
+		def missing_people_child():
 			self.collection_missing_people = self.parser_service.get_array_missing_people_from_all_pages(URLS["ДЕТИ"])
 			return render_template('index.html',
 			collection_missing_people=self.get_slice_collection_for_page(),
@@ -85,7 +85,7 @@ class WebApp():
 			status_page=self.format_status_page())
 
 		@self.app.route('/missing_people_die')
-		def missing_people_die(id):
+		def missing_people_die():
 			self.collection_missing_people = self.parser_service.get_array_missing_people_from_all_pages(URLS["ПОГИБШИЕ"])
 			return render_template('index.html',
 			collection_missing_people=self.get_slice_collection_for_page(),
@@ -94,7 +94,7 @@ class WebApp():
 
 		
 		@self.app.route('/missing_people_unidentify')
-		def missing_people_unidentify(id):
+		def missing_people_unidentify():
 			self.collection_missing_people = self.parser_service.get_array_missing_people_from_all_pages(URLS["БЕЗ ВЕСТИ"])
 			return render_template('index.html',
 			collection_missing_people=self.get_slice_collection_for_page(),
