@@ -72,9 +72,9 @@ class WebApp():
 		def view_id(id):
 			for people in self.collection_missing_people:
 				if people.get_id() == id:
-					temp_profile_missing_people = self.parser_service.get_profile_missing_people(people)
+					temp_missing_people_profile = self.parser_service.get_profile_missing_people(people)
 					
-			return render_template('single.html', missing_people_profile = temp_profile_missing_people )
+			return render_template('single.html', collection_missing_people_profile = temp_missing_people_profile )
 
 	def start_app(self) -> None:
 		self.app.run(debug=False)

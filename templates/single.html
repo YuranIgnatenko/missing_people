@@ -5,119 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <meta charset="utf-8">
   <title>Missing People</title>
+
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 	
 </head>
 
 <body>
 
-	<style>
-		
-@import url(https://fonts.googleapis.com/css?family=Montserrat:500);
-
-:root {
-  /* Base font size */
-  font-size: 10px;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-body {
-  min-height: 100vh;
-  background-color: #766565;
-}
-
-.container {
-  max-width: 100rem;
-  margin: 0 auto;
-  padding: 0 2rem 2rem;
-}
-
-
-.gallery {
-  display: flex;
-  flex-wrap: wrap;
-  /* Compensate for excess margin on outer gallery flex items */
-  margin: -1rem -1rem;
-}
-
-.gallery-item {
-  /* Minimum width of 24rem and grow to fit available space */
-  flex: 1 0 24rem;
-  /* Margin value should be half of grid-gap value as margins on flex items don't collapse */
-  margin: 1rem;
-  box-shadow: 0.3rem 0.4rem 0.4rem rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-}
-
-.gallery-image {
-  width: 100%;
-  height: 100%;
-}
-
-
-h1 {
-	color: rgb(239, 174, 124);
-	border-bottom: thick solid red;
-}
-
-span {
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-	font-size: 15px;
-	color: rgb(237, 209, 209);
-	/* border-bottom: thick solid red; */
-}
-
-@supports (display: grid) {
-  .gallery {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
-	grid-gap: 2rem;
-  }
-
-  .gallery,
-  .gallery-item {
-	margin: 0;
-  }
-
-}
-	</style>
+<ul>
+	<li><a href="/missing_people_child">Дети</a></li>
+	<li><a href="/missing_people_die">Погибшие</a></li>
+	<li><a href="/missing_people_unidentify">Без вести</a></li>
+	<li><a href="/missing_people_alert">Подозреваемые</a></li>
+	<li><a href="/settings">Настройки</a></li>
+  </ul>
 
 	<div class="container">
 
-		<h1>{{ missing_people_profile.title }}</h1>
-		<br>
-	  
-		<div class="gallery">
-	  
-		  <div class="gallery-item">
-			<!-- <img class="gallery-image" src="{{ missing_people_profile.url_image }}" > -->
-			<a href="{{ missing_people_profile.url_image }}"><img class="gallery-image" src="{{ missing_people_profile.url_image }}"></a>
-
-
-			
-			
-		</div>
-	  
-		</div>
-		<h1></h1>
-		<span>{{ missing_people_profile.date_create }}</span>
-		<h1></h1>
-		<span>{{ missing_people_profile.url_html_page }}</span>
-		<h1></h1>
-		<span>
-			{{ missing_people_profile.description }}
-		</span>
-		<h1></h1>
-		<a class="floating-btn" href="/">LIST PEOPLE</a>
-		<h1></h1>
-
-	  
-	  </div>
+		<div>
+			<div class="courses-container">
+				<div class="course">
+					<div class="course-preview">
+						<a href="{{ collection_missing_people_profile.url_image }}"><img src="{{ collection_missing_people_profile.url_image }}"></a>
+						<h6>{{ collection_missing_people_profile.date_create }}</h6>
+					</div>
+					<div class="course-info">
+						<div class="progress-container">
+							<span>
+								{{ collection_missing_people_profile.date_create }}
+							</span>
+						</div>
+						<h6>{{ collection_missing_people_profile.date_create }}</h6>
+						<h5>{{ collection_missing_people_profile.description }}</h5>
+						<a href="{{ collection_missing_people_profile.url_html_page }}">Источник</a>
+						<a class="btn" href="view/{{ collection_missing_people_profile.get_id() }}">Подробнее<i class="fas fa-chevron-right"></i></a>
+					</div>
+				</div>
+			</div>
+	</div>
 
 </body>
 

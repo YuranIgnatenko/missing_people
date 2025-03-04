@@ -4,6 +4,12 @@ import sys, json, argparse
 
 URL_SITE = "https://moscow.sledcom.ru/"
 URL_SITE_ALERT_SEARCH = "https://moscow.sledcom.ru/attention/Vnimanie_Propal_rebenok" # "https://moscow.sledcom.ru/folder/918943"
+URLS = {
+	"ДЕТИ":"https://moscow.sledcom.ru/attention/Vnimanie_Propal_rebenok",
+	"ПОГИБШИЕ":"https://moscow.sledcom.ru/attention/Neopoznannye-trupy",
+	"ПОДОЗРЕВАЕМЫЕ":"https://moscow.sledcom.ru/attention/Podozrevaemie_v_sovershenii_prestuplenij",
+	"БЕЗ ВЕСТИ":"https://moscow.sledcom.ru/folder/918943",
+}
 
 class MissingPeople():
 	def __init__(self, url_image:str, date_create:str, url_html_page:str, description:str) -> None:
