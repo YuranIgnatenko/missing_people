@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template
-from parser_service import Parser, MissingPeople, URL_SITE, URL_SITE_ALERT_SEARCH
+from parser_service import Parser, MissingPeople, URL_SITE, URL_SITE_ALERT_SEARCH, URLS
 
 class WebApp():
 	def __init__(self) -> None:
@@ -75,6 +75,31 @@ class WebApp():
 					temp_missing_people_profile = self.parser_service.get_profile_missing_people(people)
 					
 			return render_template('single.html', collection_missing_people_profile = temp_missing_people_profile )
+
+		@self.app.route('/missing_people_child')
+		def missing_people_child(id):
+			self.collection_missing_people = self.parser_service.get_array_missing_people_from_all_pages(URLS["ДЕТИ"])
+			return render_template('index.html',
+			collection_missing_people=self.get_slice_collection_for_page(),
+			status_count_missing_people=self.status_count_missing_people, 
+			status_page=self.format_status_page())
+
+		@self.app.route('/missing_people_die')
+		def missing_people_die(id):
+			self.collection_missing_people = self.parser_service.get_array_missing_people_from_all_pages(URLS["ПОГИБШИЕ"])
+			return render_template('index.html',
+			collection_missing_people=self.get_slice_collection_for_page(),
+			status_count_missing_people=self.status_count_missing_people, 
+			status_page=self.format_status_page())
+
+		
+		@self.app.route('/missing_people_unidentify')
+		def missing_people_unidentify(id):
+			self.collection_missing_people = self.parser_service.get_array_missing_people_from_all_pages(URLS["БЕЗ ВЕСТИ"])
+			return render_template('index.html',
+			collection_missing_people=self.get_slice_collection_for_page(),
+			status_count_missing_people=self.status_count_missing_people, 
+			status_page=self.format_status_page())
 
 	def start_app(self) -> None:
 		self.app.run(debug=False)
