@@ -32,29 +32,40 @@ class MissingPeopleProfile():
 
 
 
-def MissingPeopleFromSoup(url_site_prefix:str, item_div_people_info:BeautifulSoup) -> MissingPeople:
+def MissingPeopleFromSoup(url_site_prefix:str, soup_section_item:BeautifulSoup) -> MissingPeople:
 	try:
-		date_create = item_div_people_info.find("div",class_="bl-item-date").text
+		date_create = soup_section_item.find("div",class_="bl-item-date").text
 	except:
 		date_create = "no date create"
 
 	try:
-		description = item_div_people_info.find("div",class_="bl-item-text").text
+		description = [line.text for line in soup_section_item.find("article",class_="c-detail").find_all("p")].join("\n")
 	except:
 		try:
-			description = item_div_people_info.find("p").text
+			description = [line.text for line in soup_section_item.find("div",class_="c-detail").find_all("div")].join("\n")
 		except:
-			try:
-				description = item_div_people_info.find("h4").text
-			except:
-				description = "no description"
+			description = "no description"
+	
+	print("description:", description)
 
-	url_html_page = url_site_prefix+item_div_people_info.find("a").get('href')
+	try:
+		url_html_page = url_site_prefix+soup_section_item.find("article", class_="c-detail").find("img").src
+	except:
+		try:
+			url_html_page = url_site_prefix+soup_section_item.find("div", class_="c-detail").find("img").src
+		except:
+			url_html_page = "static/img/alert.jpg"
+
 	
 	try:
-		url_image = url_site_prefix+item_div_people_info.find("img").get('src')
+		url_image = url_site_prefix+soup_section_item.find("article", class_="c-detail").find("img").src
 	except:
-		url_image = "static/img/alert.jpg"
+		try:
+			url_image = url_site_prefix+soup_section_item.find("div", class_="c-detail").find("img").src
+		except:
+			url_image = "static/img/alert.jpg"
+
+
 	return MissingPeople(url_image,date_create,url_html_page,description)
 
 class Parser():
@@ -92,18 +103,18 @@ class Parser():
 		print(temp_url_image)
 		return MissingPeopleProfile(temp_url_image,temp_date_create,temp_url_html_page,temp_description, temp_title)
 
-	def get_array_missing_people_from_all_pages(self, url_site:str, url:str) -> list[MissingPeople]:
+	def get_array_missing_people_from_all_pages(self, url_clean_web_site:str, url_directory:str) -> list[MissingPeople]:
 		temp_array_missing_people = []
-		for html_page_url in self.get_array_html_pages_urls(url):
-			temp_array_missing_people += self.get_array_missing_people_from_url(url_site, html_page_url)
+		for html_page_url in self.get_array_html_pages_urls(url_directory):
+			temp_array_missing_people += self.get_array_missing_people_from_url(url_clean_web_site, html_page_url)
 		return temp_array_missing_people
 
 	def get_array_missing_people_from_url(self, url_site:str, url_alsert_search:str) -> list[MissingPeople]:
 		response = requests.get(url_alsert_search, headers=self.headers, cookies=self.cookies)
 		soup = BeautifulSoup(response.text, 'html.parser')
 		temp_array_peoples = []
-		for divs in soup.find_all('div', class_="bl-item clearfix"):
-			temp_array_peoples.append(MissingPeopleFromSoup(url_site, divs))
+		temp_section = soup.find('section', class_="b1-item clearfix")
+		temp_array_peoples.append(MissingPeopleFromSoup(url_site, temp_section))
 		return temp_array_peoples
 
 	def get_number_count_html_pages(self, url:str) -> int:
@@ -126,9 +137,12 @@ class Parser():
 		for divs in soup.find_all('div', class_="b-pagination"):
 			for div in divs:
 				div_str = str(div)
-				if div_str.startswith(r'<a href="/folder/'):
+				if div_str.startswith(r'<a href="/'):
 					temp_url_page = url+div_str.split('="')[1].split('">')[0]
-					temp_url_page = temp_url_page.replace("/folder/918943/folder/918943", "/folder/918943")
+					try:
+						temp_url_page = temp_url_page.replace("/folder/918943/folder/918943", "/folder/918943")
+					except:
+						pass
 					temp_array_peoples.append(temp_url_page)
 		return temp_array_peoples
 
