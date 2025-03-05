@@ -155,19 +155,3 @@ def main() -> None:
 
 if __name__ == "__main__":
 	main()
-
-
-
-
-# <div class='container'>
-# 	{% for item in collection_missing_people: %}
-# 	<div class="card">
-# 		<img src="{{ item.url_image }}" alt="Avatar" style="width:100%">
-# 		<div class="container">
-# 		  <h4><b>{{ item.date_create }}</b></h4> 
-# 		  <p>{{ item.url_html_page }}</p> 
-# 		  <P>{{ item.description }}</P>
-# 		</div>
-# 	  </div>
-# 	{% endfor %}
-# </div>  

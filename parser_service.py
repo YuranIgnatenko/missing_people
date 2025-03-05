@@ -31,7 +31,6 @@ def MissingPeopleFromSoup(url_site_prefix:str, soup_section:BeautifulSoup) -> Mi
 	try:
 		temp_title = soup_section.find("div", class_="bl-item-holder").find("div", class_="bl-item-title").find("a").text
 	except:
-		# try:
 		temp_title = soup_section.find("div", class_="bl-item-holder").find("div", class_="bl-item-title").find("a").text
 
 	try:
@@ -185,18 +184,12 @@ class ParserLizaAlert():
 		for div in soup.find("div", class_="forumbg").find('ul', class_="topiclist topics").find_all("li", class_="row bg1"):
 			url_html_page = URL_SITE_LIZAALERT_FORUM + div.find("a").get("href")[2:]
 			people = self.get_people(url_html_page)
-
-			print(people.title, people.url_html_page, people.date_create, people.url_image)
-
 			temp_array_peoples.append(people)
-			
 		return temp_array_peoples
 
 
 
 def main() -> None:
-	print("start")
-
 	def test_sledkom():
 		parser = ParserSledcom()
 		ar1 = parser.get_array_people(DICT_URLS_SLEDCOM["БЕЗ ВЕСТИ"])
@@ -211,7 +204,7 @@ def main() -> None:
 		parser = ParserLizaAlert()
 		parser.get_array_people(URL_SITE_LIZAALERT)
 
-	# test_mvd()
+	# test_sletkom()
 	# test_mvd()
 	test_liza_alert()
 
