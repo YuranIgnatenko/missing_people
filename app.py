@@ -1,12 +1,15 @@
 from flask import Flask, request, render_template
-from parser_service import Parser, MissingPeople, URL_SITE, URL_SITE_ALERT_SEARCH, URLS
+from parser_service import *
 
 class WebApp():
 	def __init__(self) -> None:
 		self.app = Flask(__name__)
-		self.parser_service = Parser()
-		# self.collection_missing_people = self.parser_service.get_array_missing_people_from_all_pages(URL_SITE, URL_SITE_ALERT_SEARCH)
-		self.collection_missing_people = self.parser_service.get_array_people(URLS["ПОГИБШИЕ"])
+
+		self.parser_sledkom = ParserSledcom()
+		self.parser_mvd = ParserMvd()
+		self.parser_lizaalert = ParserLizaAlert()
+
+		self.collection_missing_people = self.parser_sledkom.get_array_people(DICT_URLS_SLEDCOM["ПОГИБШИЕ"])
 
 		self.status_count_missing_people = self.format_status_missing_people()
 		self.count_max_items_in_page = 5
@@ -61,7 +64,7 @@ class WebApp():
 		@self.app.route('/reparsing')
 		def index_reparsing():
 			self.active_number_page = 0
-			self.collection_missing_people = self.parser_service.get_array_people(URL_SITE_ALERT_SEARCH)
+			self.collection_missing_people = self.parser_sledkom.get_array_people(DICT_URLS_SLEDCOM["БЕЗ ВЕСТИ"])
 			self.status_count_missing_people = self.format_status_missing_people()
 			return render_template('index.html',
 			collection_missing_people=self.get_slice_collection_for_page(),
@@ -73,7 +76,7 @@ class WebApp():
 			for people in self.collection_missing_people:
 				if people.id == id:
 					print("++++ OK VIEW")
-					temp_missing_people_profile = self.parser_service.get_profile_people(people.url_html_page)
+					temp_missing_people_profile = self.parser_sledkom.get_profile_people(people.url_html_page)
 					return render_template('single.html', people = temp_missing_people_profile )
 
 			return render_template('index.html',
@@ -83,7 +86,7 @@ class WebApp():
 
 		@self.app.route('/missing_people_child')
 		def missing_people_child():
-			self.collection_missing_people = self.parser_service.get_array_people(URLS["ДЕТИ"])
+			self.collection_missing_people = self.parser_sledkom.get_array_people(DICT_URLS_SLEDCOM["ДЕТИ"])
 			return render_template('index.html',
 			collection_missing_people=self.get_slice_collection_for_page(),
 			status_count_missing_people=self.status_count_missing_people, 
@@ -92,7 +95,7 @@ class WebApp():
 
 		@self.app.route('/missing_people_die')
 		def missing_people_die():
-			self.collection_missing_people = self.parser_service.get_array_people(URLS["ПОГИБШИЕ"])
+			self.collection_missing_people = self.parser_sledkom.get_array_people(DICT_URLS_SLEDCOM["ПОГИБШИЕ"])
 			return render_template('index.html',
 			collection_missing_people=self.get_slice_collection_for_page(),
 			status_count_missing_people=self.status_count_missing_people, 
@@ -101,7 +104,7 @@ class WebApp():
 		
 		@self.app.route('/missing_people_unidentify')
 		def missing_people_unidentify():
-			self.collection_missing_people = self.parser_service.get_array_people(URLS["БЕЗ ВЕСТИ"])
+			self.collection_missing_people = self.parser_sledkom.get_array_people(DICT_URLS_SLEDCOM["БЕЗ ВЕСТИ"])
 			return render_template('index.html',
 			collection_missing_people=self.get_slice_collection_for_page(),
 			status_count_missing_people=self.status_count_missing_people, 
@@ -110,11 +113,31 @@ class WebApp():
 
 		@self.app.route('/missing_people_alert')
 		def missing_people_alert():
-			self.collection_missing_people = self.parser_service.get_array_people(URLS["ПОДОЗРЕВАЕМЫЕ"])
+			self.collection_missing_people = self.parser_sledkom.get_array_people(DICT_URLS_SLEDCOM["ПОДОЗРЕВАЕМЫЕ"])
 			return render_template('index.html',
 			collection_missing_people=self.get_slice_collection_for_page(),
 			status_count_missing_people=self.status_count_missing_people, 
 			status_page=self.format_status_page())
+			
+		@self.app.route('/missing_people_mvd')
+		def missing_people_mvd():
+			self.collection_missing_people = self.parser_mvd.get_array_people(URL_SITE_MVD)
+			return render_template('index.html',
+			collection_missing_people=self.get_slice_collection_for_page(),
+			status_count_missing_people=self.status_count_missing_people, 
+			status_page=self.format_status_page())
+
+		@self.app.route('/missing_people_lizaalert')
+		def missing_people_lizaalert():
+			self.collection_missing_people = self.parser_lizaalert.get_array_people(URL_SITE_LIZAALERT)
+			return render_template('index.html',
+			collection_missing_people=self.get_slice_collection_for_page(),
+			status_count_missing_people=self.status_count_missing_people, 
+			status_page=self.format_status_page())
+
+		@self.app.route('/settings')
+		def settings():
+			return render_template('settings.html')
 
 	def start_app(self) -> None:
 		self.app.run(debug=False)
