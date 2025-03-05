@@ -141,10 +141,6 @@ class WebApp():
 			status_count_missing_people=self.status_count_missing_people, 
 			status_page=self.format_status_page())
 
-		@self.app.route('/settings')
-		def settings():
-			return render_template('settings.html')
-
 	def start_app(self) -> None:
 		self.app.run(debug=False)
 
