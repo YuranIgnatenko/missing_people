@@ -27,19 +27,25 @@
 			<div class="courses-container">
 				<div class="course">
 					<div class="course-preview">
-						<a href="{{ collection_missing_people_profile.url_image }}"><img src="{{ collection_missing_people_profile.url_image }}"></a>
-						<h6>{{ collection_missing_people_profile.date_create }}</h6>
+						<a href="/view/{{ people.url_image }}"><img src="{{ people.url_image }}"></a>
 					</div>
 					<div class="course-info">
-						<div class="progress-container">
+						<h5>
 							<span>
-								{{ collection_missing_people_profile.date_create }}
+								ID: [{{ people.id }}]
 							</span>
-						</div>
-						<h6>{{ collection_missing_people_profile.date_create }}</h6>
-						<h5>{{ collection_missing_people_profile.description }}</h5>
-						<a href="{{ collection_missing_people_profile.url_html_page }}">Источник</a>
-						<a class="btn" href="view/{{ collection_missing_people_profile.get_id() }}">Подробнее<i class="fas fa-chevron-right"></i></a>
+						<h5>
+
+						<hr>
+
+						<h2>{{ people.title }}</h2>
+
+						<hr>
+
+						<h5>{{ people.description }}</h5>
+						<hr>
+						<a href="{{ people.url_html_page }}">Источник</a>
+						<a class="btn" href="/view/{{ people.id }}">Подробнее<i class="fas fa-chevron-right"></i></a>
 					</div>
 				</div>
 			</div>

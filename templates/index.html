@@ -23,19 +23,25 @@
 			<div class="courses-container">
 				<div class="course">
 					<div class="course-preview">
-						<a href="{{ item.url_image }}"><img src="{{ item.url_image }}"></a>
-						<h6>{{ item.date_create }}</h6>
+						<a href="/view/{{ item.url_image }}"><img src="{{ item.url_image }}"></a>
 					</div>
 					<div class="course-info">
-						<div class="progress-container">
+						<h5>
 							<span>
-								{{ item.date_create }}
+								ID: [{{ item.id }}]
 							</span>
-						</div>
-						<h6>{{ item.date_create }}</h6>
+						<h5>
+
+						<hr>
+
+						<h2>{{ item.title }}</h2>
+
+						<hr>
+
 						<h5>{{ item.description }}</h5>
+						<hr>
 						<a href="{{ item.url_html_page }}">Источник</a>
-						<a class="btn" href="view/{{ item.get_id() }}">Подробнее<i class="fas fa-chevron-right"></i></a>
+						<a class="btn" href="/view/{{ item.id }}">Подробнее<i class="fas fa-chevron-right"></i></a>
 					</div>
 				</div>
 			</div>

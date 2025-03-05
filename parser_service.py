@@ -12,61 +12,47 @@ URLS = {
 }
 
 class MissingPeople():
-	def __init__(self, url_image:str, date_create:str, url_html_page:str, description:str) -> None:
-		self.url_image = url_image
-		self.date_create = date_create 
-		self.url_html_page = url_html_page
-		self.description =  description
-	def get_id(self):
-		return self.url_html_page.split("/")[-2]
-
-class MissingPeopleProfile():
-	def __init__(self, url_image:str, date_create:str, url_html_page:str, description:str, title:str) -> None:
+	def __init__(self, title:str, url_image:str, date_create:str, url_html_page:str, description:str, id:str) -> None:
 		self.url_image = url_image
 		self.date_create = date_create 
 		self.url_html_page = url_html_page
 		self.description =  description
 		self.title = title
+		self.id = id
 	def get_id(self):
 		return self.url_html_page.split("/")[-2]
 
 
-
-def MissingPeopleFromSoup(url_site_prefix:str, soup_section_item:BeautifulSoup) -> MissingPeople:
-	try:
-		date_create = soup_section_item.find("div",class_="bl-item-date").text
-	except:
-		date_create = "no date create"
+def MissingPeopleFromSoup(url_site_prefix:str, soup_section:BeautifulSoup) -> MissingPeople:
 
 	try:
-		description = [line.text for line in soup_section_item.find("article",class_="c-detail").find_all("p")].join("\n")
+		temp_title = soup_section.find("div", class_="bl-item-holder").find("div", class_="bl-item-title").find("a").text
 	except:
-		try:
-			description = [line.text for line in soup_section_item.find("div",class_="c-detail").find_all("div")].join("\n")
-		except:
-			description = "no description"
-	
-	print("description:", description)
+		# try:
+		temp_title = soup_section.find("div", class_="bl-item-holder").find("div", class_="bl-item-title").find("a").text
 
 	try:
-		url_html_page = url_site_prefix+soup_section_item.find("article", class_="c-detail").find("img").src
+		url_image = URL_SITE+soup_section.find("div", class_="bl-item-image").find("a").find("img").get("src")
 	except:
-		try:
-			url_html_page = url_site_prefix+soup_section_item.find("div", class_="c-detail").find("img").src
-		except:
-			url_html_page = "static/img/alert.jpg"
+		url_image = "/static/img/alert.jpg"
 
-	
 	try:
-		url_image = url_site_prefix+soup_section_item.find("article", class_="c-detail").find("img").src
+		description = soup_section.find("div", class_="bl-item-holder").find("div", class_="bl-item-text")
+		description = "\n".join([t.find("span").text for t in description.find_all("p")])
 	except:
-		try:
-			url_image = url_site_prefix+soup_section_item.find("div", class_="c-detail").find("img").src
-		except:
-			url_image = "static/img/alert.jpg"
+		description = soup_section.find("div", class_="bl-item-holder").find("div", class_="bl-item-text")
+		description = "\n".join([t.text for t in description.find_all("p")])
+
+	try:
+		url_html_page = soup_section.find("div", class_="bl-item-title").find("a").get("href")
+	except:
+		url_html_page = soup_section.find("div", class_="bl-item-title").find("a").get("href")
 
 
-	return MissingPeople(url_image,date_create,url_html_page,description)
+	id = f"{url_html_page.split("/")[-2]}"
+
+	return MissingPeople(temp_title, url_image,temp_title,url_html_page,description, id)
+
 
 class Parser():
 	def __init__(self) -> None:
@@ -78,44 +64,50 @@ class Parser():
 			"yandexuid":"2083661171724784397"
 		}
 
-	def get_profile_missing_people(self, missing_people:MissingPeople) -> MissingPeopleProfile:
-		response = requests.get(missing_people.url_html_page, headers=self.headers, cookies=self.cookies)
+	def get_profile_people(self, html_page_url:str) -> MissingPeople:
+		response = requests.get(URL_SITE+html_page_url, headers=self.headers, cookies=self.cookies)
 		soup = BeautifulSoup(response.text, 'html.parser')
 
-		word_for_split = r'Официальная группа Главного следственного управления в социальной сети "ВКонтакте"'
-		temp_array_peoples = []
-		temp_description = ""
-		temp_url_image = ""
-		temp_date_create = ""
-		temp_url_html_page = ""
-		temp_title = ""
+		soup_section = soup.find('section', class_="b-container-center")
 
-		for soup_p in soup.find_all('p'):
-			temp_description += soup_p.text
 		
-		temp_url_image = URL_SITE+soup.find('img', class_="img_left").get('src')
-		temp_title = soup.find('h1', class_="b-topic t-h1 m_b4").text
-		temp_description = temp_description.split(word_for_split)[0]
-		temp_date_create = missing_people.date_create
-		temp_url_html_page = missing_people.url_html_page
+		temp_title = soup_section.find("h1", class_="b-topic").text
 
-		print()
-		print(temp_url_image)
-		return MissingPeopleProfile(temp_url_image,temp_date_create,temp_url_html_page,temp_description, temp_title)
+		try:
+			url_image = URL_SITE+soup_section.find("article", class_="c-detail").find("img", class_="img_left").get("src")
+		except:
+			url_image = "/static/img/alert.jpg"
 
-	def get_array_missing_people_from_all_pages(self, url_clean_web_site:str, url_directory:str) -> list[MissingPeople]:
+		try:
+			description = soup_section.find("article", class_="c-detail")
+			description = "\n".join([t.find("span").text for t in description.find_all("p")])
+		except:
+			description = soup_section.find("article", class_="c-detail")
+			description = "\n".join([t.text for t in description.find_all("p")])
+
+		temp_url_page = URL_SITE+html_page_url
+
+
+		id = f"{temp_url_page.split("/")[-2]}"
+
+		return MissingPeople(temp_title, url_image,temp_title,temp_url_page,description, id)
+
+
+
+	def get_array_people(self, url_directory:str) -> list[MissingPeople]:
+		url_clean_web_site = URL_SITE
 		temp_array_missing_people = []
-		for html_page_url in self.get_array_html_pages_urls(url_directory):
-			temp_array_missing_people += self.get_array_missing_people_from_url(url_clean_web_site, html_page_url)
+		for html_page_url in self.get_url_pages(url_directory):
+			html_page_url = "/".join(list(dict.fromkeys(html_page_url.split("/"))))+"/"
+			response = requests.get(html_page_url, headers=self.headers, cookies=self.cookies)
+			soup = BeautifulSoup(response.text, 'html.parser')
+
+			for item_people in soup.find('section', class_="b-container-center").find_all("div", class_="bl-item clearfix"):
+				temp_array_missing_people.append(MissingPeopleFromSoup(URL_SITE, item_people))
+
+	
 		return temp_array_missing_people
 
-	def get_array_missing_people_from_url(self, url_site:str, url_alsert_search:str) -> list[MissingPeople]:
-		response = requests.get(url_alsert_search, headers=self.headers, cookies=self.cookies)
-		soup = BeautifulSoup(response.text, 'html.parser')
-		temp_array_peoples = []
-		temp_section = soup.find('section', class_="b1-item clearfix")
-		temp_array_peoples.append(MissingPeopleFromSoup(url_site, temp_section))
-		return temp_array_peoples
 
 	def get_number_count_html_pages(self, url:str) -> int:
 		response = requests.get(url, headers=self.headers, cookies=self.cookies)
@@ -130,7 +122,7 @@ class Parser():
 		count_number_page = int(last_item.split("/")[3])
 		return count_number_page
 
-	def get_array_html_pages_urls(self, url:str) -> list[str]:
+	def get_url_pages(self, url:str) -> list[str]:
 		response = requests.get(url, headers=self.headers, cookies=self.cookies)
 		soup = BeautifulSoup(response.text, 'html.parser')
 		temp_array_peoples = []
@@ -139,16 +131,17 @@ class Parser():
 				div_str = str(div)
 				if div_str.startswith(r'<a href="/'):
 					temp_url_page = url+div_str.split('="')[1].split('">')[0]
-					try:
-						temp_url_page = temp_url_page.replace("/folder/918943/folder/918943", "/folder/918943")
-					except:
-						pass
 					temp_array_peoples.append(temp_url_page)
+		if len(temp_array_peoples) == 0:
+			temp_array_peoples.append(url)
 		return temp_array_peoples
 
 def main() -> None:
+	print("start")
 	parser = Parser()
-	parser.get_array_missing_people_from_all_pages(URL_SITE_ALERT_SEARCH)
+	ar1 = parser.get_array_people(URLS["БЕЗ ВЕСТИ"])
+	for people in ar1:
+		print("GET ARRAY PEOPLE",people.date_create, people.url_image, people.description)
 
 
 if __name__ == "__main__":
