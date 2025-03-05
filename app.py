@@ -47,7 +47,8 @@ class WebApp():
 
 		@self.app.route('/next')
 		def index_next():
-			self.active_number_page += 1
+			if self.active_number_page < int(len(self.collection_missing_people) / self.count_max_items_in_page):
+				self.active_number_page += 1
 			return render_template('index.html',
 			collection_missing_people=self.get_slice_collection_for_page(),
 			status_count_missing_people=self.status_count_missing_people, 
@@ -55,7 +56,8 @@ class WebApp():
 
 		@self.app.route('/prev')
 		def index_prev():
-			self.active_number_page -= 1
+			if self.active_number_page > 1:
+				self.active_number_page -= 1
 			return render_template('index.html',
 			collection_missing_people=self.get_slice_collection_for_page(),
 			status_count_missing_people=self.status_count_missing_people, 
@@ -74,8 +76,12 @@ class WebApp():
 		@self.app.route('/view/<id>')
 		def view_id(id):
 			for people in self.collection_missing_people:
-				if people.id == id:
-					print("++++ OK VIEW")
+				if people.id == id:					
+					if people.url_html_page.find(URL_SITE_LIZAALERT_FORUM) != -1:
+						return render_template('single.html', people = people )
+					if people.url_html_page.find(URL_SITE_MVD) != -1:
+						return render_template('single.html', people = people )
+
 					temp_missing_people_profile = self.parser_sledkom.get_profile_people(people.url_html_page)
 					return render_template('single.html', people = temp_missing_people_profile )
 

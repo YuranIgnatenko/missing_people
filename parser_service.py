@@ -161,7 +161,7 @@ class ParserLizaAlert():
 		self.headers = { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'}
 		self.cookies  = {}
 
-	def get_people(self, url_html_page:str):
+	def get_people(self, url_html_page:str) -> MissingPeople:
 		response = requests.get(url_html_page, headers=self.headers, cookies=self.cookies)
 		soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -173,7 +173,7 @@ class ParserLizaAlert():
 		date_create = soup.find("div", class_="postbody").find("p", class_="author").find("time").text
 		description = soup.find("div", class_="content").text
 
-		id = 1
+		id = url_html_page.split("sid=")[-1]
 		return MissingPeople(title, url_image, date_create, url_html_page,description,id)
 
 	def get_array_people(self, url:str) -> list[str]:
